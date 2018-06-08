@@ -19,6 +19,7 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ImageSpan;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -31,6 +32,7 @@ public class MainActivity extends Activity {
 	private static int REQ_1=1;
 	private static int REQ_2=2;
 	private String mFilePath;
+	private String displayUrl="/storage/emulated/0/image1.png";
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -44,6 +46,15 @@ public class MainActivity extends Activity {
 	private void initShow(){
 		iv_photo=(ImageView)findViewById(R.id.iv_photo);
 		edt_content=(EditText)findViewById(R.id.edt_content);
+		edt_content.setText("<img src=/storage/emulated/0/image1.png/>");
+		
+	}
+	public void displayImage(View view){
+		
+		DisplayMetrics dm = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(dm);
+        float screenwid=dm.widthPixels;
+		ImageUtil.DisplayImage(this, displayUrl, edt_content, screenwid);
 		
 	}
 	public void startCamera(View view){
@@ -69,45 +80,55 @@ public class MainActivity extends Activity {
 				Bitmap bitmap=(Bitmap)bundle.get("data");
 				iv_photo.setImageBitmap(bitmap);
 			}else if(requestCode==REQ_2){
-				FileInputStream fis=null;
-				try {
-					fis=new FileInputStream(mFilePath);
-					Bitmap bitmap=BitmapFactory.decodeStream(fis);
-					//iv_photo.setImageBitmap(bitmap);让图片显示在imageview上
-					Matrix matrix=new Matrix();
-					DisplayMetrics dm = new DisplayMetrics();
-			        getWindowManager().getDefaultDisplay().getMetrics(dm);
-			        float screenwid=dm.widthPixels;
-					float scaleWidth = ((float) screenwid) / bitmap.getWidth();
-			        // 取得想要缩放的matrix参数
-			        
-			        matrix.postScale(scaleWidth, scaleWidth);
-					bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(),matrix,true);
-					ImageSpan imagespan = new ImageSpan(this,bitmap);
-					String tempUrl = "<img src="+mFilePath+"/>";
-					SpannableString spannableString = new SpannableString(tempUrl);
-					spannableString.setSpan(imagespan, 0, tempUrl.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-					
-					int index = edt_content.getSelectionStart(); // 获取光标所在位置
-			        Editable edit_text = edt_content.getEditableText();
-			        edit_text.append("\n");
-			        if (index < 0 || index >= edit_text.length()) {
-			            edit_text.append(spannableString);
-			        } else {
-			            edit_text.insert(index, spannableString);
-			        }
-			        edit_text.insert(index + spannableString.length(), "\n");
-				} catch (FileNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}finally {
-					try {
-						fis.close();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
+//				FileInputStream fis=null;
+//				try {
+//					fis=new FileInputStream(mFilePath);
+//					Bitmap bitmap=BitmapFactory.decodeStream(fis);
+//					//iv_photo.setImageBitmap(bitmap);让图片显示在imageview上
+//					Matrix matrix=new Matrix();
+//					DisplayMetrics dm = new DisplayMetrics();
+//			        getWindowManager().getDefaultDisplay().getMetrics(dm);
+//			        float screenwid=dm.widthPixels;
+//					float scaleWidth = ((float) screenwid) / bitmap.getWidth();
+//			        // 取得想要缩放的matrix参数
+//			        
+//			        matrix.postScale(scaleWidth, scaleWidth);
+//					bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(),matrix,true);
+//					ImageSpan imagespan = new ImageSpan(this,bitmap);
+//					String tempUrl = "<img src="+mFilePath+"/>";
+//					SpannableString spannableString = new SpannableString(tempUrl);
+//					spannableString.setSpan(imagespan, 0, tempUrl.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+//					
+//					int index = edt_content.getSelectionStart(); // 获取光标所在位置
+//			        Editable edit_text = edt_content.getEditableText();
+//			        edit_text.append("\n");
+//			        if (index < 0 || index >= edit_text.length()) {
+//			            edit_text.append(spannableString);
+//			        } else {
+//			            edit_text.insert(index, spannableString);
+//			        }
+//			        edit_text.insert(index + spannableString.length(), "\n");
+//			        //Log.i("Log", edit_text.toString());
+//				} catch (FileNotFoundException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}finally {
+//					try {
+//						fis.close();
+//					} catch (IOException e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+//					}
+//				}
+				
+				//尝试封装
+				
+				DisplayMetrics dm = new DisplayMetrics();
+		        getWindowManager().getDefaultDisplay().getMetrics(dm);
+		        float screenwid=dm.widthPixels;
+		        ImageUtil.InsertImage(this, mFilePath, edt_content, screenwid);
+				
+				
 				
 				
 			}
