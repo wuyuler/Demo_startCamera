@@ -32,6 +32,15 @@
         android:text="显示本地图片"
         
         />
+    <Button 
+        
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="getPhotoFromAlbum"
+        android:layout_below="@+id/displayImage"
+        android:text="获取相册图片"
+        
+        />
     <ScrollView 
         android:layout_width="match_parent"
       android:layout_height="match_parent"

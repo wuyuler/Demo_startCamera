@@ -4,20 +4,25 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import android.app.Activity;
 import android.content.Context;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.net.Uri;
+import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ImageSpan;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.widget.EditText;
 
 public class ImageUtil {
 	
-	static public void  InsertImage(Context context,String mFilePath,EditText edt_content,float screenwid){
+	static public void  InsertImage(Activity activity,Context context,String mFilePath,EditText edt_content){
 		
 		FileInputStream fis=null;
 		try {
@@ -25,9 +30,9 @@ public class ImageUtil {
 			Bitmap bitmap=BitmapFactory.decodeStream(fis);
 			//iv_photo.setImageBitmap(bitmap);让图片显示在imageview上
 			Matrix matrix=new Matrix();
-//			DisplayMetrics dm = new DisplayMetrics();
-//	        getWindowManager().getDefaultDisplay().getMetrics(dm);
-//	        float screenwid=dm.widthPixels;
+			DisplayMetrics dm = new DisplayMetrics();
+			activity.getWindowManager().getDefaultDisplay().getMetrics(dm);
+	        float screenwid=dm.widthPixels;
 			float scaleWidth = ((float) screenwid) / bitmap.getWidth();
 	        // 取得想要缩放的matrix参数
 	        
@@ -40,7 +45,7 @@ public class ImageUtil {
 			
 			int index = edt_content.getSelectionStart(); // 获取光标所在位置
 	        Editable edit_text = edt_content.getEditableText();
-	        edit_text.append("\n");
+	        
 	        if (index < 0 || index >= edit_text.length()) {
 	            edit_text.append(spannableString);
 	        } else {
@@ -113,5 +118,20 @@ static public void  DisplayImage(Context context,String mFilePath,EditText edt_c
 		}
 		
 	}
+public static  String getRealPathFromURI(Uri contentURI,Context context) {
+    String result;
+    Cursor cursor = context.getContentResolver().query(contentURI, null, null, null, null);
+    if (cursor == null) {
+ // Source is Dropbox or other similar local file path
+        result = contentURI.getPath();
+    } else {
+        cursor.moveToFirst();
+        int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+        result = cursor.getString(idx);
+        cursor.close();
+    }
+    return result;
+}
+
 
 }
