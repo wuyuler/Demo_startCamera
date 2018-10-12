@@ -118,6 +118,7 @@ static public void  DisplayImage(Context context,String mFilePath,EditText edt_c
 		}
 		
 	}
+
 public static  String getRealPathFromURI(Uri contentURI,Context context) {
     String result;
     Cursor cursor = context.getContentResolver().query(contentURI, null, null, null, null);
